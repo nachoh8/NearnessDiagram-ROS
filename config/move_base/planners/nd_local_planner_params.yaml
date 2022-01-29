@@ -1,0 +1,11 @@
+NDLocalPlanner:
+  distance_robot_bounds: 0.225
+  robot_radius_nd: 0.225
+  distance_goal_factor: 1.7
+  max_linear_velocity: 0.5
+  max_rotational_velocity: 1.57
+  max_sensor_distance: 3.0
+  ls2_diff: 3
+  security_distance: 0.38
+  num_sectors: 144
+  wide_area_angle: 90

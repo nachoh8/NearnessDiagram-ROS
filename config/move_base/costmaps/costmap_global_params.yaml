@@ -1,0 +1,13 @@
+global_costmap:
+
+  #Set the global and robot frames for the costmap
+  global_frame: map
+  robot_base_frame: base_link     # or base_footprint
+ 
+  static_map: true
+
+  transform_tolerance: 13.5
+  plugins:
+    - {name: static_layer,            type: "costmap_2d::StaticLayer"}
+    - {name: obstacle_layer,          type: "costmap_2d::ObstacleLayer"}
+    - {name: inflation_layer,         type: "costmap_2d::InflationLayer"}

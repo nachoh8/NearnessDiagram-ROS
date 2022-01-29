@@ -1,0 +1,80 @@
+<?xml version="1.0"?> 
+<launch>
+
+<param name="/use_sim_time" value="true"/> 
+
+<arg name="map" default="empty"/>
+
+<!-- STAGE -->
+<node name="stage_ros" pkg="stage_ros" type="stageros" args="$(find nd)/world/$(arg map)/simple.world"/>
+
+<!-- MAP -->
+<node name="map_server" pkg="map_server" type="map_server" args="$(find nd)/world/$(arg map)/simple.yaml"/>
+
+<!-- MOVE_BASE -->
+<node pkg="move_base" type="move_base" respawn="false" name="move_base" output="screen">
+
+    <remap from="scan" to="base_scan"/>	
+
+	<!-- Costmaps configuration -->
+	<rosparam file="$(find nd)/config/move_base/costmaps/costmap_common_params.yaml" command="load" ns="global_costmap" />
+	<rosparam file="$(find nd)/config/move_base/costmaps/costmap_common_params.yaml" command="load" ns="local_costmap" />
+	<rosparam file="$(find nd)/config/move_base/costmaps/costmap_local_params.yaml"  command="load" />
+	<rosparam file="$(find nd)/config/move_base/costmaps/costmap_global_params.yaml" command="load" />
+		
+	<!-- Planners selection and configuration -->
+	<rosparam file="$(find nd)/config/move_base/planners_selection.yaml" command="load" />
+	
+	<!--rosparam file="$(find arob_lab3)/config/move_base/planners/dwa_local_planner_params.yaml" command="load" /-->
+	<rosparam file="$(find nd)/config/move_base/planners/nd_local_planner_params.yaml" command="load" />
+	
+</node>
+
+  <!-- AMCL -->
+<node name="amcl" pkg="amcl" type="amcl" output="screen">
+		
+	<remap from="scan" to="base_scan"/>
+
+	<param name="odom_frame_id" value="odom" />
+	<param name="base_frame_id" value="base_link" />
+
+	<!-- Initial position -->
+	<param name="initial_pose_x" value="0" /> <!--For paper and empty: x = 0 y = 0, For orig world x = -6 y = -6, For test_final_2 world x = 6 y = 7-->
+    <param name="initial_pose_y" value="0" />
+    <param name="initial_pose_a" value="0" />
+    	
+	<!-- amcl specific -->
+	<param name="odom_model_type"           value="diff"/>
+	<param name="gui_publish_rate"          value="10.0"/>
+	<param name="laser_max_beams"           value="1081"/>
+	<param name="laser_max_range"           value="30.0"/>
+	<param name="min_particles"             value="500"/>
+	<param name="max_particles"             value="2000"/>
+	<param name="kld_err"                   value="0.05"/>
+	<param name="kld_z"                     value="0.99"/>
+	<param name="odom_alpha1"               value="0.2"/>
+	<param name="odom_alpha2"               value="0.2"/>
+	<!-- translation std dev, m -->
+	<param name="odom_alpha3"               value="0.2"/>
+	<param name="odom_alpha4"               value="0.2"/>
+    <param name="odom_alpha5"               value="0.1"/>
+    <param name="laser_z_hit"               value="0.95"/>
+	<param name="laser_z_short"             value="0.01"/>
+	<param name="laser_z_max"               value="0.05"/>
+	<param name="laser_z_rand"              value="0.05"/>
+	<param name="laser_sigma_hit"           value="0.2"/>
+	<param name="laser_lambda_short"        value="0.1"/>
+	<param name="laser_model_type"          value="likelihood_field"/>
+	<param name="laser_likelihood_max_dist" value="2.0"/>
+	<param name="update_min_d"              value="0.1"/>
+	<param name="update_min_a"              value="0.2"/> <!-- 0.2 -->
+	<param name="resample_interval"         value="1"/> <!--	1  -->
+	<param name="transform_tolerance"       value="1.0"/>
+	<param name="recovery_alpha_slow"       value="0.0001"/>
+	<param name="recovery_alpha_fast"       value="0.1"/>
+  </node>
+
+  <!--  RVIZ  -->
+  <node name="rviz" pkg="rviz" type="rviz" args="-d $(find nd)/config/p3_rviz.rviz"/>
+  
+</launch>

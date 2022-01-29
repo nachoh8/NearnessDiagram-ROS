@@ -1,0 +1,5 @@
+<library path="lib/libnd_local_planner_lib">
+    <class name="nd_local_planner/NDLocalPlanner" type="nd_local_planner::NDLocalPlanner" base_class_type="nav_core::BaseLocalPlanner">
+        <description>This is the Nearness Diagram local planner plugin.</description>
+    </class>
+</library>
